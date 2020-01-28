@@ -3,6 +3,37 @@
 
 *WIP*
 
+Automatically save window layout and let user revisit it.
+
 Based on link:https://vi.stackexchange.com/a/22545/9333[brilliant dedowsdi's answer on vim stackexchange].
 
 image::vim-winlayout.gif[]
+
+
+== Setup
+
+Add mappings:
+
+[source,vim]
+------------------------------------------------------------------------------
+" no default mappings are provided, map it in your vimrc
+nmap <F3> <Plug>(WinlayoutBackward)
+nmap <F4> <Plug>(WinlayoutForward)
+------------------------------------------------------------------------------
+
+
+Change layout history size:
+[source,vim]
+------------------------------------------------------------------------------
+" default is 20
+let g:winlayout_max = 40
+------------------------------------------------------------------------------
+
+== Known Limitations
+
+Still looking for solutions.
+
+1. Fugitive buffers are not properly handled.
+2. Doesn't auto save layout on split window size change, for example, when you
+   change it with mouse. (though sizes are saved if triggered by existing
+   autocommands)
