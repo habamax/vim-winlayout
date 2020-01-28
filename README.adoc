@@ -3,6 +3,6 @@
 
 *WIP*
 
-Based on link:https://vi.stackexchange.com/a/22545/9333[brilliant dedovski's answer on vim stackexchange].
+Based on link:https://vi.stackexchange.com/a/22545/9333[brilliant dedowsdi's answer on vim stackexchange].
 
 image::vim-winlayout.gif[]
