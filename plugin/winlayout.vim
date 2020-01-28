@@ -12,5 +12,5 @@ augroup end
 command WinlayoutInspectLayout call winlayout#inspect_layout()
 command WinlayoutInspectRestcmd call winlayout#inspect_restcmd()
 
-nnoremap <Plug>(WinlayoutBackward) :call winlayout#restore(-1)<CR>
-nnoremap <Plug>(WinlayoutForward) :call winlayout#restore(1)<CR>
+nnoremap <silent> <Plug>(WinlayoutBackward) :silent call winlayout#restore(-1)<CR>
+nnoremap <silent> <Plug>(WinlayoutForward) :silent call winlayout#restore(1)<CR>
