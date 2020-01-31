@@ -2,6 +2,7 @@ let s:winlayout_max = get(g:, "winlayout_max", 20)
 let s:winlayout_index = -1
 let s:layouts=[]
 let s:resize_cmds=[]
+let s:cursors=[]
 let s:prev_event = ""
 
 "" shouldn't save layout if it is being restored
@@ -23,6 +24,7 @@ func! winlayout#save(...) abort
 
 	let l:restcmd = winrestcmd()
 	let l:layout = winlayout()
+	let l:cursor = getcurpos()
 	call s:add_buf_to_layout(l:layout)
 	" Do nothing if layout and sizes are the same as previous
 	if !empty(s:layouts) && l:layout == s:layouts[-1] && l:restcmd == s:resize_cmds[-1]
@@ -35,16 +37,19 @@ func! winlayout#save(...) abort
 	if l:event == "BufEnter" && s:prev_event == "WinNew"
 		call remove(s:layouts, -1)
 		call remove(s:resize_cmds, -1)
+		call remove(s:cursors, -1)
 	endif
 	let s:prev_event = l:event
 
 	call add(s:layouts, l:layout)
 	call add(s:resize_cmds, l:restcmd)
+	call add(s:cursors, [winnr(), l:cursor])
 
 	" Keep only g:winlayout_max layouts
 	if len(s:layouts) > s:winlayout_max
 		call remove(s:layouts, 0)
 		call remove(s:resize_cmds, 0)
+		call remove(s:cursors, 0)
 	endif
 
 	let s:winlayout_index = len(s:layouts) - 1
@@ -73,9 +78,11 @@ func! winlayout#restore(direction) abort
 		let s:winlayout_index += a:direction
 		if s:winlayout_index < 0 
 			let s:winlayout_index = 0
+			return
 		endif
 		if s:winlayout_index >= len(s:layouts)
 			let s:winlayout_index = len(s:layouts) - 1
+			return
 		endif
 
 		
@@ -87,6 +94,13 @@ func! winlayout#restore(direction) abort
 
 		" resize
 		exe s:resize_cmds[s:winlayout_index]
+
+		" goto saved window
+		exe printf("%dwincmd w", s:cursors[s:winlayout_index][0])
+		
+		" set cursor
+		call setpos('.', s:cursors[s:winlayout_index][1])
+
 	finally
 		let s:is_restoring_layout = v:false
 	endtry
