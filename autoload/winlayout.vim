@@ -2,6 +2,7 @@ let s:winlayout_max = get(g:, "winlayout_max", 20)
 let s:winlayout_index = -1
 let s:layouts=[]
 let s:resize_cmds=[]
+let s:prev_event = ""
 
 "" shouldn't save layout if it is being restored
 let s:is_restoring_layout = v:false
@@ -15,7 +16,7 @@ func! winlayout#inspect_restcmd() abort
 	echom @*
 endfunc
 
-func! winlayout#save() abort
+func! winlayout#save(...) abort
 	if s:is_restoring_layout
 		return
 	endif
@@ -27,6 +28,16 @@ func! winlayout#save() abort
 	if !empty(s:layouts) && l:layout == s:layouts[-1] && l:restcmd == s:resize_cmds[-1]
 		return
 	endif
+
+	" if previous event was WinNew and Current event is BufEnter (like split
+	" fires 2 of them) delete previous
+	let l:event = get(a:, 1, "")
+	if l:event == "BufEnter" && s:prev_event == "WinNew"
+		call remove(s:layouts, -1)
+		call remove(s:resize_cmds, -1)
+	endif
+	let s:prev_event = l:event
+
 	call add(s:layouts, l:layout)
 	call add(s:resize_cmds, l:restcmd)
 

@@ -5,8 +5,9 @@ let g:loaded_winlayout = 1
 
 "XXX: How can I detect if size of a split window has been changed?
 augroup winlayout | au!
-	au BufEnter * :call winlayout#save()
-	au WinNew,QuitPre * :call winlayout#save()
+	au BufEnter * :call winlayout#save("BufEnter")
+	au WinNew * :call winlayout#save("WinNew")
+	au QuitPre * :call winlayout#save("QuitPre")
 augroup end
 
 command WinlayoutInspectLayout call winlayout#inspect_layout()
